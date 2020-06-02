@@ -1,3 +1,10 @@
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------
+;   asm-x86-game
+;   This is a modified code obtained at https://github.com/igormp/asm-x86-game
+;   Author fbsouza
+;   Created at Sep 6th 2018
+;----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 BITS 16 ; informa ao assembler que eh um codigo de 16 bits, ou seja, no modo real
 org 0x7c00 ; endereco do bootsector area, apos utilizar a diretiva org deve-se carregar o CS e o DS com 0
 jmp 0x0000:_start ; carrega o DS com 0 atraves de um far jump
