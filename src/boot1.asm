@@ -3,14 +3,13 @@
 ;   This is a modified code obtained at https://github.com/igormp/asm-x86-game
 ;   Author fbsouza
 ;   Created at Sep 6th 2018
-;	Modify By: Aaron Solera
-;	Modify By: Efren
+;	Modified By: Aaron Solera
+;	Modified By: Efren Carvajal
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 BITS 16 			; tell the assembler that we're using 16 bit mode
 org 0x7c00 			; Sets the start addres
 jmp 0x0000:_start 	; charges the DS with 0 via a far jump
-
 _start:
 	mov ah, 0x00
 	mov al, 0x03 	; start the text mode
@@ -46,8 +45,8 @@ _reset:
 	int 0x13
 	jc _reset 		; in case of error retry
 
-	mov ax, 0x50 	; read the sector address 0x500
-	mov es, ax 		; 
+	mov ax, 0x50 	; move the address 0x500 (boot2 start addres)
+	mov es, ax 		
 	xor bx, bx
 
 _read:
