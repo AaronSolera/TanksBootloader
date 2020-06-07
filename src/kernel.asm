@@ -14,17 +14,17 @@ section .bss
 
 section .text
 
-%macro delay 1 
+%macro delay 2 
     push ax
-    push cx                 ; safe used registers in stack
+    push cx                               ; safe used registers in stack
     push dx
 
-    mov cx, 0               ; high value = 0
-    mov dx, %1           ; low value = 10000
-    mov ah, 86h             ; wait BIOS call
-    int 15h                 ; BIOS call
+    mov cx, %2                            ; high value equal to first macro parameter
+    mov dx, %1                            ; low value equal to second macro parameter
+    mov ah, 86h                           ; wait BIOS call
+    int 15h                               ; BIOS call
 
-    pop dx                  ; restore values to used registers
+    pop dx                                ; restore values to used registers
     pop cx
     pop ax
 %endmacro
@@ -40,34 +40,104 @@ section .text
     pop ebx
 %endmacro
 
-%macro print 3
-    pushad
+%macro print 3                            ; The parameter order is x, y, string memory pointer
+    pusha
     mov ah, 2
     mov bh, 0
-    mov dh, %1      ; move o curso pro meio da tela
-    mov dl, %2
+    mov dh, %2                            ; move cursor to the postion discribed in second parameter
+    mov dl, %1
     int 10h
-    mov si, %3      ; salva Text em si
+    mov si, %3                            ; move string to si register
     call _print
+    popa
+%endmacro
+
+%macro print_info 3                       ; The parameter order is level (1=beginner, 2=medium, 3=advanced), kills, keyboard command (0=up, 1=down, 2=right, 3=left)
+    mov  ebp, esp
+    pushad
+    print 0,  0, info1
+    mov ax, %1
+    cmp ax, 1
+    je  _print_beginner
+    cmp ax, 2
+    je  _print_medium
+    print 7,  0, level + 16
+    jmp _continue_print
+
+    _print_beginner:
+        print 7,  0, level
+        jmp _continue_print
+    _print_medium:
+        print 7,  0, level + 9
+
+    _continue_print:
+        print 16, 0, info2
+        add word [defeated_tanks], %2 
+        print 23, 0, defeated_tanks
+        sub word [defeated_tanks], %2 
+        print 25, 0, info3
+        mov ax, %3
+        cmp ax, 0
+        je  _print_up
+        cmp ax, 1
+        je  _print_down
+        cmp ax, 2
+        je  _print_right
+        print 34, 0, command + 14
+        jmp _finish
+
+    _print_up:
+        print 34, 0, command 
+        jmp _finish
+    _print_down:
+        print 34, 0, command + 3
+        jmp _finish
+    _print_right:
+        print 34, 0, command + 8
+
+    _finish:
+        print 0,  1, bar
     popad
+    mov esp, ebp
+%endmacro
+
+%macro animation 5                       ; The parameter order is x, y, frames, speed, sprite
+    mov  ebp, esp
+    push eax
+    push ecx
+    mov eax, 0
+    mov ecx, %5
+    _draw_frame:
+        draw_sprite %1, %2, 0, ecx
+        add ecx, 256
+        inc eax
+        delay 0, %4
+        cmp eax, %3
+        jl  _draw_frame
+    pop ecx
+    pop eax
+    mov esp, ebp
 %endmacro
 
 _start:
     mov al, 13h                           ; setting 320x200 resolution 
     mov ah, 0h                            ; setting video mode
     int 10h                               ; calling BIOS screen service
-    mov ax, 200
 
 _loop:
     
-    delay 30000
+    delay 30000, 0
 
-    print 0, 0, msg
-    draw_sprite 100, 100, 3, ptank
+    print_info 1, 0, 0
+
+    ; -This is an example, erase it-
+    draw_sprite 100, 100, 0, ptank         
     draw_sprite 132, 100, 0, etank
     draw_sprite 164, 100, 0, uwall
     draw_sprite 196, 100, 0, dwall
-    draw_sprite 228, 100, 0, eagle
+    draw_sprite 228, 100, 0, eagle 
+    draw_sprite 260, 100, 0, bullet
+    ; ------------------------------
 
     jmp _loop                             ; next loop iteration
 
@@ -155,20 +225,19 @@ _draw_sprite:
 
     popad
     mov esp, ebp
-    
     ret
 
 _print:
-    lodsb           ; carrega si em al
-    mov ah, 0Eh     ; Printa AL
-    mov bh, 0       ; paǵina
-    mov bl, 15      ; cor
+    lodsb                                 ; move si to al
+    mov ah, 0Eh                           ; print al
+    mov bh, 0                             ; set page to be used
+    mov bl, 15                            ; font color
     int 10h
-    cmp al, 0       ; compara al e 0
-    jne _print      ; repete pra prox caractere
+    cmp al, 0                             ; comparing if al is equal to zero, it means the string is over
+    jne _print                            ; repeating it for next character
     ret
 
-; Enemy thank sprite
+; Player thank sprite
 ptank db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
       db 00,00,00,00,00,00,10,10,10,10,00,00,00,00,00,00
       db 00,00,00,00,00,00,10,10,10,10,00,00,00,00,00,00
@@ -259,5 +328,81 @@ eagle db 07,00,00,00,00,00,07,07,07,00,00,00,00,00,00,07
       db 00,00,00,07,00,07,00,07,07,00,07,00,07,00,00,00
       db 00,00,07,00,07,00,07,00,00,07,00,07,00,07,00,00
 
-msg db "Level ",0h
+; Bullet sprite
+bullet 
+      db 00,00,00,00,00,00,08,08,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,08,06,06,06,00,00,00,00,00,00,00
+      db 00,00,00,00,08,06,06,06,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,06,08,08,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,08,07,07,08,08,00,00,00,00,00,00
+      db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
+      db 00,00,00,00,00,08,07,07,08,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,08,08,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+; Win animation sprites
+win   db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,10,10,11,11,00,00,00,00,00,00
+      db 00,00,00,00,00,00,10,10,11,11,00,00,00,00,00,00
+      db 00,00,00,00,00,00,12,12,14,14,00,00,00,00,00,00
+      db 00,00,00,00,00,00,12,12,14,14,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,10,10,00,00,00,00,00,00,11,11,00,00,00
+      db 00,00,00,10,10,00,00,00,00,00,00,11,11,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,12,12,00,00,00,00,00,00,14,14,00,00,00
+      db 00,00,00,12,12,00,00,00,00,00,00,14,14,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
+      db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
+      db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
+      db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
+      db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+info1 db "LEVEL: ", 0h
+info2 db "KILLS: ", 0h
+info3 db "COMMAND: ", 0h
+level db "BEGINNER", 0h, "MEDIUM", 0h, "ADVANCED", 0h
+defeated_tanks db 48, 0h
+command db "UP", 0h, "DOWN", 0h, "RIGHT", 0h, "LEFT", 0h
+bar db "________________________________________", 0h
+
 dir_offset dd 0
