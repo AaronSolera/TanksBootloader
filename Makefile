@@ -4,7 +4,7 @@ BIN = ./bin/
 
 bootdisk=disk.img
 blocksize=512
-disksize=100
+disksize=1000
 
 BOOT1 = boot1
 
@@ -42,7 +42,7 @@ write_boot2:
 	dd if=$(BIN)$(BOOT2).bin of=$(bootdisk) bs=$(blocksize) seek=$(boot2pos) count=$(boot2size) conv=notrunc status=noxfer
 #write kernel bin file to disk.img file
 write_kernel:
-	dd if=$(BIN)$(KERNEL).bin of=$(bootdisk) bs=$(blocksize) seek=$(kernelpos) count=$(kernelsize) conv=notrunc
+	dd if=$(BIN)$(KERNEL).bin of=$(bootdisk) bs=$(blocksize) seek=$(kernelpos) count=$(kernelsize) conv=notrunc status=noxfer
 #Put the Hex representacion of disk.img into the terminal
 hexdump:
 	hexdump $(file)
