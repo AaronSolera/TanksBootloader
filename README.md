@@ -1,2 +1,2 @@
 # TanksBootloader
-Juego de tankes con bootloader para arquitecturas x86
+Juego de tanques con bootloader para arquitecturas x86
