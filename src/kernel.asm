@@ -19,6 +19,7 @@ section .data
     TANK_HEIGHT equ 16
     TANK_WIDTH  equ 16
 
+    msg2 db "colision",0h
     info1 db "LEVEL: ", 0h
     info2 db "KILLS: ", 0h
     info3 db "COMMAND: ", 0h
@@ -213,6 +214,12 @@ section .data
               db 00, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 00
 
 section .bss
+    posX resd 2
+    posY resd 2
+    posX2 resd 2
+    posY2 resd 2
+    dir resd 1
+    resultcollition resd 1
 
     dir_offset resd 1
     i resb 1
@@ -257,14 +264,14 @@ section .text
     int 10h
     mov si, %3                            ; move string to si register
     
-    _print:
+    %%_print:
       lodsb                                 ; move si to al
       mov ah, 0Eh                           ; print al
       mov bh, 0                             ; set page to be used
       mov bl, 15                            ; font color
       int 10h
       cmp al, 0                             ; comparing if al is equal to zero, it means the string is over
-      jne _print                            ; repeating it for next character
+      jne %%_print                            ; repeating it for next character
     
     popa
     mov esp, ebp
@@ -343,15 +350,32 @@ _start:
     mov ah, 0h                            ; setting video mode
     int 10h                               ; calling BIOS screen service
 
+    xor eax,eax
+    mov eax,100
+    mov [posX],eax
+    mov eax,20
+    mov [posY],eax
+    mov eax,16
+    mov [posX2],eax
+    mov [posY2],eax
+
 _loop:
     
     delay 30000, 0
 
     ;print_info 1, 0, 0
     print 0, 0, info1
+    mov eax,[posX]
+    sub eax,1
+    mov [posX],eax 
+    draw_sprite [posX],[posY],0,ptank
+    
+    
+
 
     ; -This is an example, erase it-
     call draw_map
+    draw_sprite [posX2],[posY2],1,etank
     ; ------------------------------
 
     jmp _loop                             ; next loop iteration
@@ -365,9 +389,14 @@ _loop:
 _draw_sprite:
     push ebp
     mov  ebp, esp
-    pushad
 
-    mov cx, word [ebp + 10]                ; setting x position with first parameter
+    push ax
+    push cx
+    push dx
+    push si
+    push di
+
+    mov cx, word [ebp + 10]               ; setting x position with first parameter
     mov dx, word [ebp + 8]                ; setting y position with first parameter
     mov ah, 0Ch                           ; setting write pixel mode
 
@@ -376,7 +405,7 @@ _draw_sprite:
     mov di, dx                            ; copying y initial position
     add di, 16                            ; adding sprite height size to y initial position
 
-    mov dword [dir_offset], ebx           ; Moving ebx, which holds image memory address, to offset variable   
+    mov dword [dir_offset], ebx           ; Moving ebx, which holds image memory address, to offset variable  
     cmp word [ebp + 6], 0                 ; Comparing postion parameter to 0 -> normal image
     je  _draw
     cmp word [ebp + 6], 3                 ; Comparing postion parameter to 3 -> left turned image
@@ -385,20 +414,20 @@ _draw_sprite:
     je  _right
 
     add ebx, 255                          ; Adding 255 to image memory address if position parameter is 1 -> bottom turned image
-    mov dword [dir_offset], ebx           ; Moving ebx, which holds image memory address, to offset variable 
+    mov dword [dir_offset], ebx           ; Moving ebx, which holds image memory address, to offset variable
     jmp _draw
 
     _right:
       add ebx, 240                        ; Adding 240 to image memory address if position parameter is 2
-      mov dword [dir_offset], ebx         ; Moving ebx, which holds image memory address, to offset variable 
+      mov dword [dir_offset], ebx         ; Moving ebx, which holds image memory address, to offset variable
 
     _draw:
         push ebx                          ; Pushing ebx for not affecting it
-        mov ebx, dword [dir_offset]       ; Seeting ebx value with offset variable 
+        mov ebx, dword [dir_offset]       ; Seeting ebx value with offset variable
         mov al, byte [ebx]                ; getting colors from sprite memory pointer
         pop ebx                           ; Poping ebx for not affecting it
 
-        int 10h                           ; calling BIOS screen service 
+        int 10h                           ; calling BIOS screen service
         inc cx                            ; increasing x positon counter
         cmp word [ebp + 6], 1
         je  _decrease1
@@ -410,7 +439,7 @@ _draw_sprite:
         inc dword [dir_offset]            ; increasing sprite memory pointer to get the next color
         jmp _continue
 
-        _decrease1: 
+        _decrease1:
             dec dword [dir_offset]        ; decreasing sprite memory pointer to get the next color
             jmp _continue
         _decrease16:
@@ -430,37 +459,51 @@ _draw_sprite:
             je  _subcontinue
 
             inc ebx                       ; increasing sprite memory pointer to get the next column of colors
-            mov dword [dir_offset], ebx   ; Moving ebx, which holds image memory address, to offset variable 
+            mov dword [dir_offset], ebx   ; Moving ebx, which holds image memory address, to offset variable
 
             _subcontinue:
-                mov cx, word [ebp + 10]    ; reseting x counter with initial x position
+                mov cx, word [ebp + 10]   ; reseting x counter with initial x position
                 inc dx                    ; increasing y positon counter
                 cmp dx, di                ; comparing if y postion reaches height sprite size
-
                 jne _draw
 
-    popad
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop ax
+
     mov esp, ebp
     pop ebp
     ret 6
 
+
+
 draw_map:
     push ebp
-    mov esp, ebp
-    pushad
+    mov ebp, esp
+
+    push si
+    push di
+    push eax
+    push cx
+    push dx
 
     mov si, 8
     mov di, 0
     mov eax, CURRENT_MAP
 
-    _draw_map:   
+    mov cx, 0
+    mov dx, 0
+
+    _draw_map:  
         cmp  byte [eax], 1
         je   _dwall
         cmp  byte [eax], 2
         je   _uwall
         cmp  byte [eax], 3
         je   _eagle
-        jmp  _next_column 
+        jmp  _next_column
 
         _dwall:
             mov ebx, dwall
@@ -474,27 +517,128 @@ draw_map:
         _draw_tiled:
             push si                        
             push di                        
-            push word 0 
+            push word 0
             call _draw_sprite
 
         _next_column:
             inc eax
-            inc byte [i]
+            inc cx
             add si, 16
-            cmp byte [i], MAP_WIDTH
+            cmp cx, MAP_WIDTH
             je  _next_row
             jmp _draw_map
 
         _next_row:
             mov si, 8
             add di, 16
-            mov byte [i], 0
-            inc byte [j]
-            cmp byte [j], MAP_HEIGHT
+            mov cx, 0
+            inc dx
+            cmp dx, MAP_HEIGHT
             jne _draw_map
-            mov byte [j], 0
-    popad
-    mov ebp, esp
+
+    pop dx
+    pop cx
+    pop eax
+    pop di
+    pop si
+
+    mov esp, ebp
     pop ebp
     ret
 
+    ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    choca:
+        mov eax,[posX]
+        add eax,'0'
+        mov [posX],eax
+        ;print 5,5,posX
+        sub eax,'0'
+        mov [posX],eax
+        xor eax,eax
+        xor ebx,ebx
+        mov eax,[posX]          ;eax = 10
+        mov ebx,[posX2]         ;ebx = 16
+        add ebx,16              ;ebx = 16 + 16 = 32
+        cmp eax,ebx             ;comparo 
+        jg salida               ;salta si eax es mayor y aun así..... salta
+          ;print 10, 10, msg2
+          
+          mov eax,[posX]
+          add eax,16
+          mov ebx,[posX2]
+          cmp ebx,eax
+          jg salida
+            mov eax,[posY]
+            mov ebx,[posY2]
+            add ebx,16
+            cmp eax,ebx
+            jg salida
+              mov eax,[posY]
+              mov ebx,[posY2]
+              add eax,16
+              cmp ebx,eax
+              jg salida
+                print 16, 16, msg2
+          
+            ;print 10, 10, msg2
+        salida:
+        ret
+    ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+;    movePos:
+;    pushad
+;    ;*************************code here******************************
+;    ;movements configured
+;    ;0 move up,1 move down, 2 mov right, 3 mov left
+;      cmp [dir],0
+;      jne down              ; if don't jump, it have to move up
+;        cmp [posY],0
+;        je mov_fin
+;        dec dword[posY]
+;        jmp compareColli
+
+
+;      jmp mov_fin
+;      mov_down:
+;        cmp [dir],1
+;        jne mov_right
+
+
+;        jmp mov_fin
+;        mov_right:
+;          cmp [dir],2
+;          jne mov_left
+
+
+;          jmp mov_fin
+;          mov_left:
+;            cmp [dir],3
+;            jne mov_fin
+
+
+;    mov_fin:
+
+
+;    popad
+;    ret 
+
+;compareColli
+;  pushad
+;    mov eax,0
+;    loopHeight:
+;    cmp eax,MAP_HEIGHT
+;    je  noColision
+;    inc eax
+;      mov ebx,0
+;      loopWidth:
+;      cmp ebx,MAP_WIDTH
+;      je loopHeight
+
+
+;      inc ebx
+
+;      noColision:
+;       equ 12
+;       equ 19
+;  popad
+;ret

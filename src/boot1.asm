@@ -11,7 +11,7 @@ BITS 16 			; tell the assembler that we're using 16 bit mode
 ;Code for make the USB Booteable
 mov eax, cr0
 or eax, 1
-mov cr0, eax 		; For Qemu test comment this line
+;mov cr0, eax 		; For Qemu test comment this line
 ; --------
 org 0x7c00 			; Sets the start addres
 jmp 0x0000:_start 	; charges the DS with 0 via a far jump
