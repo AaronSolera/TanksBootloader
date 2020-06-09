@@ -19,7 +19,7 @@ section .data
     TANK_HEIGHT equ 16
     TANK_WIDTH  equ 16
 
-    msg2 db "colision",0h
+    msg2  db "colision",0h
     info1 db "LEVEL: ", 0h
     info2 db "KILLS: ", 0h
     info3 db "COMMAND: ", 0h
@@ -121,21 +121,21 @@ section .data
 
     ; Bullet sprite
     bullet db 00,00,00,00,00,00,08,08,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,08,06,06,06,00,00,00,00,00,00,00
-          db 00,00,00,00,08,06,06,06,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,06,08,08,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,08,07,07,08,08,00,00,00,00,00,00
-          db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
-          db 00,00,00,00,00,08,07,07,08,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,08,08,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+           db 00,00,00,00,00,08,06,06,06,00,00,00,00,00,00,00
+           db 00,00,00,00,08,06,06,06,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,06,06,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,06,08,08,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,08,07,07,08,08,00,00,00,00,00,00
+           db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,08,07,07,07,07,08,00,00,00,00,00,00
+           db 00,00,00,00,00,08,07,07,08,00,00,00,00,00,00,00
+           db 00,00,00,00,00,00,08,08,00,00,00,00,00,00,00,00
+           db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+           db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+           db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
     ; Win animation sprites
     win   db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
@@ -200,30 +200,43 @@ section .data
                 db 00, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 00
                 db 00, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 00
 
-    MAP_LVL_1 db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00
-              db 00, 01, 00, 01, 00, 01, 00, 00, 01, 00, 01, 00, 00, 01, 00, 01, 00, 01, 00
-              db 00, 00, 00, 00, 00, 00, 00, 00, 01, 02, 01, 00, 00, 00, 00, 00, 00, 00, 00
-              db 00, 01, 00, 01, 00, 01, 00, 00, 01, 02, 01, 00, 00, 01, 00, 01, 00, 01, 00
-              db 00, 01, 00, 01, 00, 01, 00, 00, 01, 02, 01, 00, 00, 01, 00, 01, 00, 01, 00
-              db 00, 00, 00, 00, 00, 00, 00, 00, 01, 00, 01, 00, 00, 00, 00, 00, 00, 00, 00
-              db 02, 02, 00, 01, 01, 01, 00, 00, 00, 00, 00, 00, 00, 01, 01, 01, 00, 02, 02
-              db 00, 00, 00, 00, 00, 00, 00, 00, 01, 00, 01, 00, 00, 00, 00, 00, 00, 00, 00
-              db 00, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 00
-              db 00, 01, 01, 00, 01, 01, 00, 00, 00, 00, 00, 00, 00, 01, 01, 00, 01, 01, 00
-              db 00, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 00
-              db 00, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 00
+    MAP_LVL_1 db 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 02
+              db 02, 00, 01, 00, 01, 01, 01, 01, 00, 00, 01, 01, 01, 01, 01, 01, 00, 00, 02
+              db 02, 00, 00, 00, 01, 01, 01, 01, 00, 00, 01, 01, 01, 01, 01, 01, 00, 00, 02
+              db 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 02
+              db 02, 02, 02, 02, 02, 02, 00, 00, 02, 00, 02, 00, 00, 02, 02, 02, 02, 02, 02
+              db 02, 02, 00, 00, 00, 00, 00, 00, 02, 00, 02, 00, 00, 00, 00, 00, 00, 02, 02
+              db 02, 02, 00, 01, 01, 01, 00, 00, 02, 00, 02, 00, 00, 01, 01, 01, 00, 02, 02
+              db 02, 00, 00, 00, 00, 00, 00, 00, 02, 00, 02, 00, 00, 00, 00, 00, 00, 00, 02
+              db 02, 01, 01, 00, 01, 01, 00, 00, 02, 00, 02, 00, 00, 01, 01, 00, 01, 01, 02
+              db 02, 01, 01, 00, 01, 01, 00, 00, 00, 00, 00, 00, 00, 01, 01, 00, 01, 01, 02
+              db 02, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 02
+              db 02, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 02
 
 section .bss
-    posX resd 2
-    posY resd 2
-    posX2 resd 2
-    posY2 resd 2
-    dir resb 1
+
+    pt_pos_x        resd 2    ; 16 bits = 2 bytes
+    pt_pos_y        resd 2    ; 16 bits = 2 bytes
+    pt_dir          resb 1    ;  8 bits = 1 byte
+    count           resd 1
+
+    pb_pos_x        resd 2    ; 16 bits = 2 bytes
+    pb_pos_y        resd 2    ; 16 bits = 2 bytes
+    pb_dir          resb 1    ;  8 bits = 1 byte
+
+    posX            resd 2
+    posY            resd 2
+    posX2           resd 2
+    posY2           resd 2
+    dir             resb 1
     resultcollition resd 1
 
-    dir_offset resd 1
-    i resb 6
-    j resb 6
+    dir_offset      resd 1
+
+
+    disparo resb 1
+
+    pb_active       resb 1    ;  8 bits = 1 byte
 
 section .text
 
@@ -345,46 +358,144 @@ section .text
     mov esp, ebp
 %endmacro
 
+;0 move up,1 move down, 2 mov right, 3 mov left
+; posX  posY  dir  pb_pos_x   pb_pos_y
+%macro  setBulletPosition  5
+
+    mov al, [%3]
+    mov eax, [%1]
+    mov ebx, [%2]
+
+    cmp al, 0
+
+    cmp al, 1
+
+    cmp al, 2
+
+    cmp al, 3
+
+    %%set_up
+
+    %%set_dow
+
+    %%set_left
+
+    %%set_right
+
+%endmacro
+
 _start:
     mov al, 13h                           ; setting 320x200 resolution 
     mov ah, 0h                            ; setting video mode
     int 10h                               ; calling BIOS screen service
 
     xor eax,eax
+
     mov eax,190
-    mov [posX],eax
+    mov [pt_pos_x], eax
     mov eax,20
-    mov [posY],eax
-    mov eax,16
-    mov [posX2],eax
-    mov [posY2],eax
+    mov [pt_pos_y],eax
     mov eax,0
-    mov eax,3
-    mov [dir],eax
+    mov [pt_dir],eax
+    mov byte [pb_active], 0
+    mov al,1
+    mov [disparo], al
 
 _loop:
     
     delay 30000, 0
 
-    ;print_info 1, 0, 0
     print 0, 0, info1
-    ;mov eax,[posX]
-    ;sub eax,1
-    ;mov [posX],eax 
 
-    draw_sprite [posX],[posY],0,ptank
-    mov eax,3
-    mov [dir],eax
-    call movePos
-    mov eax,1
-    mov [dir],eax
-    call movePos
-
-    ; -This is an example, erase it-
     call draw_map
-    draw_sprite [posX2],[posY2],1,etank
-    ; ------------------------------
 
+    draw_sprite [pt_pos_x], [pt_pos_y], [pt_dir], ptank
+
+    cmp  byte [pb_active], 1    ; active bullet ? 
+    jne _key_event
+
+    mov eax, [pb_pos_x]
+    mov ebx, [pb_pos_y]
+    mov ecx, [pb_dir]
+    mov [posX], eax
+    mov [posY], ebx
+    mov [dir],ecx
+    call movePos
+    draw_sprite [pb_pos_x], [pb_pos_y], [pb_dir], eagle
+    mov eax,[posX]
+    mov ebx,[posY]
+    mov [pb_pos_x],eax
+    mov [pb_pos_y],ebx
+
+
+
+    print 0, 0, msg2
+    _key_event:
+      mov ah, 01h
+      mov ah, 00h                ; reads key event
+      int 16h
+      
+      cmp ah, 48h                ; up arrow
+      je  _up_key
+
+      cmp ah, 50h                ; down arrow
+      je  _down_key
+
+      cmp ah, 4Bh                ; left arrow
+      je  _left_key
+
+      cmp ah, 4Dh                ; right arrow
+      je  _right_key
+
+      cmp ah, 39h                ; space
+      je _shoot_key
+
+      jmp _done_key_event        ; no key event
+
+    _up_key:
+      mov  byte [dir], 0
+      jmp papucho
+
+    _down_key:
+      mov  byte [dir], 1
+      jmp papucho
+
+    _right_key:
+      mov  byte [dir], 2
+      jmp papucho
+
+    _left_key:
+      mov  byte [dir], 3
+      jmp papucho
+    
+    papucho:
+      mov eax,[pt_pos_x]
+      mov ebx,[pt_pos_y]
+      mov [posX],eax
+      mov [posY],ebx
+      call movePos
+      jmp _done_key_event
+
+    _shoot_key:
+      mov  byte [pb_active], 1 
+
+      mov  eax, [pt_dir]
+      mov  [pb_dir], eax
+
+      mov  eax, [pt_pos_x]
+      mov  ebx, [pt_pos_y]
+      mov  [pb_pos_x], eax
+      mov  [pb_pos_y], ebx
+      jmp _loop
+    _done_key_event:
+
+      mov eax, [posX]
+      mov ebx, [posY]
+      mov ecx, [dir]
+      mov [pt_pos_x], eax
+      mov [pt_pos_y], ebx
+      mov [pt_dir], ecx
+      
     jmp _loop                             ; next loop iteration
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -592,7 +703,10 @@ draw_map:
     ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     movePos:
-    
+    push eax
+    push ebx
+    push ecx
+    push edx
     ;*************************code here******************************
     ;movements configured
     ;0 move up,1 move down, 2 mov right, 3 mov left
@@ -668,12 +782,11 @@ draw_map:
             mov eax,[posX]
             add eax,1
             mov [posX],eax
-
-
     mov_fin:
-
-
-    
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
     ret 
 
 
@@ -687,7 +800,7 @@ compColisionMapa:
     push eax
     push cx
     push dx
-
+    push ebx
     mov si, 8
     mov di, 0
     mov eax, CURRENT_MAP
@@ -698,10 +811,27 @@ compColisionMapa:
     mov [posX2],ebx
     mov ebx,0
     mov [posY2],ebx
-    _draw_mapa:  
+    _draw_mapa:
+        mov ebx,0
+        mov[resultcollition],ebx  
         cmp  byte [eax], 0
         je _next_columna
+          
           call choca  
+          mov ebx,[resultcollition]
+          cmp ebx,0
+          je _next_columna
+            cmp byte[eax],1
+            jne finLoop
+            
+              mov ebx,[disparo]
+              cmp ebx,0
+              je finLoop
+                
+               mov byte[eax],00
+               jmp finLoop
+
+
         _next_columna:
             mov ebx,[posX2]
             add ebx,16
@@ -725,7 +855,8 @@ compColisionMapa:
             inc dx
             cmp dx, MAP_HEIGHT
             jne _draw_mapa
-
+    finLoop:
+    pop  ebx
     pop dx
     pop cx
     pop eax
@@ -736,64 +867,22 @@ compColisionMapa:
     pop ebp
     ret
 
-
-
-
-
-compareColli:
-  pushad
-    mov eax,0
-    mov [posX],eax
-    mov [posY],eax
-    ;mov [posX2],eax
-    ;mov [posY2],eax
-
-    mov eax, CURRENT_MAP
-    mov ebx,0
-    mov [posY2],ebx
-    mov edx,0
-    mov [i],edx
-    loopHeight:
-
-        mov edx,[i]
-        cmp edx,12
-        je  noColision
-        mov ebx,0
-        mov [posX2],ebx
-        mov ecx,0
-        mov [j],ecx
-        loopWidth:
-
-            mov ecx,[j]
-            cmp ecx,20
-            je nextRow
-            cmp  byte [eax], 0
-            je nextPos
-            
-            ;****************************************************************************************
-            jmp choca
-            
-            nextPos:  
-              ;print [i], [j], msg2 
-              mov ebx,[posX2]
-              add ebx, 16
-              mov [posX2],ebx
-              inc eax
-              mov ecx,[j]
-              add ecx,1
-              mov [j],ecx
-              jmp loopWidth
-            nextRow:
-              ;print [i], [j], msg2 
-              mov ebx,[posY2]
-              add ebx, 16
-              mov [posY2],ebx
-              mov ecx,[i]
-              add ecx, 1
-              mov [i],ecx
-              jmp loopHeight
-    noColision:
-    print [i], [j], msg2
-
-  popad
+levelUp:
+  push eax
+  push ebx
+  push ecx
+  push edx
+    mov eax,MAP_LVL_1
+    mov ebx,CURRENT_MAP
+    mov ecx,240 
+    cargarMapaUno:
+      mov dl, byte[eax]
+      mov byte[ebx],dl
+      inc eax
+      inc ebx
+    loop cargarMapaUno
+  pop edx
+  pop ecx
+  pop ebx
+  pop eax
 ret
