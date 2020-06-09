@@ -223,6 +223,7 @@ section .bss
     pb_pos_x        resd 2    ; 16 bits = 2 bytes
     pb_pos_y        resd 2    ; 16 bits = 2 bytes
     pb_dir          resb 1    ;  8 bits = 1 byte
+    pb_active       resb 1    ;  8 bits = 1 byte
 
     posX            resd 2
     posY            resd 2
@@ -235,8 +236,6 @@ section .bss
 
 
     disparo resb 1
-
-    pb_active       resb 1    ;  8 bits = 1 byte
 
 section .text
 
@@ -272,8 +271,8 @@ section .text
 
     mov ah, 2
     mov bh, 0
-    mov dh, %1                           ; move cursor to the postion discribed in second parameter
-    mov dl, %2
+    mov dh, %2                           ; move cursor to the postion discribed in second parameter
+    mov dl, %1
     int 10h
     mov si, %3                            ; move string to si register
     
@@ -405,11 +404,11 @@ _loop:
     
     delay 30000, 0
 
-    print 0, 0, info1
-
     call draw_map
 
     draw_sprite [pt_pos_x], [pt_pos_y], [pt_dir], ptank
+
+    print_info 1, 0, 0 
 
     cmp  byte [pb_active], 1    ; active bullet ? 
     jne _key_event
@@ -427,10 +426,10 @@ _loop:
     mov [pb_pos_x],eax
     mov [pb_pos_y],ebx
 
-
+    _key_event:
 
     print 0, 0, msg2
-    _key_event:
+
       mov ah, 01h
       mov ah, 00h                ; reads key event
       int 16h
@@ -487,6 +486,7 @@ _loop:
       mov  [pb_pos_x], eax
       mov  [pb_pos_y], ebx
       jmp _loop
+
     _done_key_event:
 
       mov eax, [posX]
