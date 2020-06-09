@@ -218,12 +218,12 @@ section .bss
     posY resd 2
     posX2 resd 2
     posY2 resd 2
-    dir resd 1
+    dir resb 1
     resultcollition resd 1
 
     dir_offset resd 1
-    i resb 1
-    j resb 1
+    i resb 6
+    j resb 6
 
 section .text
 
@@ -351,13 +351,16 @@ _start:
     int 10h                               ; calling BIOS screen service
 
     xor eax,eax
-    mov eax,100
+    mov eax,190
     mov [posX],eax
     mov eax,20
     mov [posY],eax
     mov eax,16
     mov [posX2],eax
     mov [posY2],eax
+    mov eax,0
+    mov eax,3
+    mov [dir],eax
 
 _loop:
     
@@ -365,13 +368,17 @@ _loop:
 
     ;print_info 1, 0, 0
     print 0, 0, info1
-    mov eax,[posX]
-    sub eax,1
-    mov [posX],eax 
-    draw_sprite [posX],[posY],0,ptank
-    
-    
+    ;mov eax,[posX]
+    ;sub eax,1
+    ;mov [posX],eax 
 
+    draw_sprite [posX],[posY],0,ptank
+    mov eax,3
+    mov [dir],eax
+    call movePos
+    mov eax,1
+    mov [dir],eax
+    call movePos
 
     ; -This is an example, erase it-
     call draw_map
@@ -548,97 +555,245 @@ draw_map:
 
     ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     choca:
+    pushad
         mov eax,[posX]
-        add eax,'0'
-        mov [posX],eax
-        ;print 5,5,posX
-        sub eax,'0'
-        mov [posX],eax
         xor eax,eax
         xor ebx,ebx
         mov eax,[posX]          ;eax = 10
         mov ebx,[posX2]         ;ebx = 16
-        add ebx,16              ;ebx = 16 + 16 = 32
+        add ebx,15              ;ebx = 16 + 16 = 32
         cmp eax,ebx             ;comparo 
         jg salida               ;salta si eax es mayor y aun así..... salta
           ;print 10, 10, msg2
           
           mov eax,[posX]
-          add eax,16
+          add eax,15
           mov ebx,[posX2]
           cmp ebx,eax
           jg salida
             mov eax,[posY]
             mov ebx,[posY2]
-            add ebx,16
+            add ebx,15
             cmp eax,ebx
             jg salida
               mov eax,[posY]
               mov ebx,[posY2]
-              add eax,16
+              add eax,15
               cmp ebx,eax
               jg salida
-                print 16, 16, msg2
+                print 5, 5, msg2
+                mov ecx,1
+                mov [resultcollition],ecx
           
             ;print 10, 10, msg2
         salida:
-        ret
+    popad
+    ret
     ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-;    movePos:
-;    pushad
-;    ;*************************code here******************************
-;    ;movements configured
-;    ;0 move up,1 move down, 2 mov right, 3 mov left
-;      cmp [dir],0
-;      jne down              ; if don't jump, it have to move up
-;        cmp [posY],0
-;        je mov_fin
-;        dec dword[posY]
-;        jmp compareColli
+    movePos:
+    
+    ;*************************code here******************************
+    ;movements configured
+    ;0 move up,1 move down, 2 mov right, 3 mov left
+    mov eax,0
+    mov [resultcollition],eax
+    mov eax,[dir]
+      cmp eax,0
+      jne mov_down              ; if don't jump, it have to move up
+        mov eax,[posY]
+        cmp eax,0
+        je mov_fin
+
+        mov eax,[posY]
+        sub eax,1
+        mov [posY],eax
+        call compColisionMapa
+        mov eax,[resultcollition]
+        cmp eax,0
+        je mov_fin
+        mov eax,[posY]
+        add eax,1
+        mov [posY],eax
+
+      jmp mov_fin
+      mov_down:
+        cmp byte[dir],1
+        jne mov_right
+        mov eax,[posY]
+        cmp eax,176
+        je mov_fin
+
+        add eax,1
+        mov [posY],eax
+        call compColisionMapa
+        mov eax,[resultcollition]
+        cmp eax,0
+        je mov_fin
+        mov eax,[posY]
+        sub eax,1
+        mov [posY],eax
+
+        jmp mov_fin
+        mov_right:
+          cmp byte[dir],2
+          jne mov_left
+          mov eax,[posX]
+          cmp eax,304
+          je mov_fin
+            add eax,1
+            mov [posX],eax
+            call compColisionMapa
+            mov eax,[resultcollition]
+            cmp eax,0
+            je mov_fin
+            mov eax,[posX]
+            sub eax,1
+            mov [posX],eax
 
 
-;      jmp mov_fin
-;      mov_down:
-;        cmp [dir],1
-;        jne mov_right
+          jmp mov_fin
+          mov_left:
+            cmp byte[dir],3
+            jne mov_fin
+            mov eax,[posX]
+            cmp eax,0
+            je mov_fin
+            sub eax,1
+            mov [posX],eax
+            call compColisionMapa
+            mov eax,[resultcollition]
+            cmp eax,0
+            je mov_fin
+            mov eax,[posX]
+            add eax,1
+            mov [posX],eax
 
 
-;        jmp mov_fin
-;        mov_right:
-;          cmp [dir],2
-;          jne mov_left
+    mov_fin:
 
 
-;          jmp mov_fin
-;          mov_left:
-;            cmp [dir],3
-;            jne mov_fin
+    
+    ret 
 
 
-;    mov_fin:
+
+compColisionMapa:
+    push ebp
+    mov ebp, esp
+
+    push si
+    push di
+    push eax
+    push cx
+    push dx
+
+    mov si, 8
+    mov di, 0
+    mov eax, CURRENT_MAP
+
+    mov cx, 0
+    mov dx, 0
+    mov ebx,8
+    mov [posX2],ebx
+    mov ebx,0
+    mov [posY2],ebx
+    _draw_mapa:  
+        cmp  byte [eax], 0
+        je _next_columna
+          call choca  
+        _next_columna:
+            mov ebx,[posX2]
+            add ebx,16
+            mov [posX2],ebx
+            inc eax
+            inc cx
+            add si, 16
+            cmp cx, MAP_WIDTH
+            je  _next_rowa
+            jmp _draw_mapa
+
+        _next_rowa:
+            mov ebx,[posY2]
+            add ebx,16
+            mov [posY2],ebx
+            mov ebx,8
+            mov [posX2],ebx
+            mov si, 8
+            add di, 16
+            mov cx, 0
+            inc dx
+            cmp dx, MAP_HEIGHT
+            jne _draw_mapa
+
+    pop dx
+    pop cx
+    pop eax
+    pop di
+    pop si
+
+    mov esp, ebp
+    pop ebp
+    ret
 
 
-;    popad
-;    ret 
-
-;compareColli
-;  pushad
-;    mov eax,0
-;    loopHeight:
-;    cmp eax,MAP_HEIGHT
-;    je  noColision
-;    inc eax
-;      mov ebx,0
-;      loopWidth:
-;      cmp ebx,MAP_WIDTH
-;      je loopHeight
 
 
-;      inc ebx
 
-;      noColision:
-;       equ 12
-;       equ 19
-;  popad
-;ret
+compareColli:
+  pushad
+    mov eax,0
+    mov [posX],eax
+    mov [posY],eax
+    ;mov [posX2],eax
+    ;mov [posY2],eax
+
+    mov eax, CURRENT_MAP
+    mov ebx,0
+    mov [posY2],ebx
+    mov edx,0
+    mov [i],edx
+    loopHeight:
+
+        mov edx,[i]
+        cmp edx,12
+        je  noColision
+        mov ebx,0
+        mov [posX2],ebx
+        mov ecx,0
+        mov [j],ecx
+        loopWidth:
+
+            mov ecx,[j]
+            cmp ecx,20
+            je nextRow
+            cmp  byte [eax], 0
+            je nextPos
+            
+            ;****************************************************************************************
+            jmp choca
+            
+            nextPos:  
+              ;print [i], [j], msg2 
+              mov ebx,[posX2]
+              add ebx, 16
+              mov [posX2],ebx
+              inc eax
+              mov ecx,[j]
+              add ecx,1
+              mov [j],ecx
+              jmp loopWidth
+            nextRow:
+              ;print [i], [j], msg2 
+              mov ebx,[posY2]
+              add ebx, 16
+              mov [posY2],ebx
+              mov ecx,[i]
+              add ecx, 1
+              mov [i],ecx
+              jmp loopHeight
+    noColision:
+    print [i], [j], msg2
+
+  popad
+ret
