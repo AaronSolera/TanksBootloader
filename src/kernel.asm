@@ -25,8 +25,9 @@ section .data
     info3 db "COMMAND: ", 0h
     level db "BEGINNER", 0h, "MEDIUM", 0h, "ADVANCED", 0h
     defeated_tanks db 48, 0h  
-    command db "UP", 0h, "DOWN", 0h, "RIGHT", 0h, "LEFT", 0h, "SPACE", 0h, "L", 0h, "R", 0h
+    command db "UP   ", 0h, "DOWN ", 0h, "RIGHT", 0h, "LEFT ", 0h, "SPACE", 0h, "L    ", 0h, "R    ", 0h
     bar db "________________________________________", 0h
+    pause_label db "PAUSE", 0h
 
     ; Player thank sprite
     ptank db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
@@ -137,56 +138,6 @@ section .data
            db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
            db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
-    ; Win animation sprites
-    win   db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,10,10,11,11,00,00,00,00,00,00
-          db 00,00,00,00,00,00,10,10,11,11,00,00,00,00,00,00
-          db 00,00,00,00,00,00,12,12,14,14,00,00,00,00,00,00
-          db 00,00,00,00,00,00,12,12,14,14,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,10,10,00,00,00,00,00,00,11,11,00,00,00
-          db 00,00,00,10,10,00,00,00,00,00,00,11,11,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,12,12,00,00,00,00,00,00,14,14,00,00,00
-          db 00,00,00,12,12,00,00,00,00,00,00,14,14,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
-          db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
-          db 00,10,10,00,00,10,10,00,00,11,11,00,00,11,11,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
-          db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-          db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
-          db 00,12,12,00,00,12,12,00,00,14,14,00,00,14,14,00
-          db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-
     CURRENT_MAP db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00
                 db 00, 01, 00, 01, 00, 01, 00, 00, 01, 00, 01, 00, 00, 01, 00, 01, 00, 01, 00
                 db 00, 00, 00, 00, 00, 00, 00, 00, 01, 02, 01, 00, 00, 00, 00, 00, 00, 00, 00
@@ -199,19 +150,6 @@ section .data
                 db 00, 01, 01, 00, 01, 01, 00, 00, 00, 00, 00, 00, 00, 01, 01, 00, 01, 01, 00
                 db 00, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 00
                 db 00, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 00
-
-    MAP_LVL_1 db 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 02
-              db 02, 00, 01, 00, 01, 01, 01, 01, 00, 00, 01, 01, 01, 01, 01, 01, 00, 00, 02
-              db 02, 00, 00, 00, 01, 01, 01, 01, 00, 00, 01, 01, 01, 01, 01, 01, 00, 00, 02
-              db 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 02
-              db 02, 02, 02, 02, 02, 02, 00, 00, 02, 00, 02, 00, 00, 02, 02, 02, 02, 02, 02
-              db 02, 02, 00, 00, 00, 00, 00, 00, 02, 00, 02, 00, 00, 00, 00, 00, 00, 02, 02
-              db 02, 02, 00, 01, 01, 01, 00, 00, 02, 00, 02, 00, 00, 01, 01, 01, 00, 02, 02
-              db 02, 00, 00, 00, 00, 00, 00, 00, 02, 00, 02, 00, 00, 00, 00, 00, 00, 00, 02
-              db 02, 01, 01, 00, 01, 01, 00, 00, 02, 00, 02, 00, 00, 01, 01, 00, 01, 01, 02
-              db 02, 01, 01, 00, 01, 01, 00, 00, 00, 00, 00, 00, 00, 01, 01, 00, 01, 01, 02
-              db 02, 01, 01, 00, 01, 01, 00, 00, 01, 01, 01, 00, 00, 01, 01, 00, 01, 01, 02
-              db 02, 00, 00, 00, 00, 00, 00, 00, 01, 03, 01, 00, 00, 00, 00, 00, 00, 00, 02
 
 section .bss
 
@@ -233,7 +171,8 @@ section .bss
     resultcollition resd 1
 
     dir_offset      resd 1
-
+    key             resw 1
+    on_pause        resb 1
 
     disparo resb 1
 
@@ -283,7 +222,7 @@ section .text
       mov bl, 15                            ; font color
       int 10h
       cmp al, 0                             ; comparing if al is equal to zero, it means the string is over
-      jne %%_print                            ; repeating it for next character
+      jne %%_print                          ; repeating it for next character
     
     popa
     mov esp, ebp
@@ -321,17 +260,32 @@ section .text
         je  _print_down
         cmp ax, 2
         je  _print_right
-        print 34, 0, command + 14
+        cmp ax, 3
+        je  _print_left
+        cmp ax, 4
+        je  _print_space
+        cmp ax, 5
+        je  _print_l
+        print 34, 0, command + 36
         jmp _finish
 
     _print_up:
         print 34, 0, command 
         jmp _finish
     _print_down:
-        print 34, 0, command + 3
+        print 34, 0, command + 6
         jmp _finish
     _print_right:
-        print 34, 0, command + 8
+        print 34, 0, command + 12
+        jmp _finish
+    _print_left:
+        print 34, 0, command + 18
+        jmp _finish
+    _print_space:
+        print 34, 0, command + 24
+        jmp _finish
+    _print_l:
+        print 34, 0, command + 30
 
     _finish:
         print 0,  1, bar
@@ -383,6 +337,73 @@ section .text
 
 %endmacro
 
+%macro draw_map 0
+    push ebp
+    mov ebp, esp
+
+    push si
+    push di
+    push eax
+    push cx
+    push dx
+
+    mov si, 8
+    mov di, 0
+    mov eax, CURRENT_MAP
+
+    mov cx, 0
+    mov dx, 0
+
+    _draw_map:  
+        cmp  byte [eax], 1
+        je   _dwall
+        cmp  byte [eax], 2
+        je   _uwall
+        cmp  byte [eax], 3
+        je   _eagle
+        jmp  _next_column
+
+        _dwall:
+            mov ebx, dwall
+            jmp _draw_tiled
+        _uwall:
+            mov ebx, uwall
+            jmp _draw_tiled
+        _eagle:
+            mov ebx, eagle
+
+        _draw_tiled:
+            push si                        
+            push di                        
+            push word 0
+            call _draw_sprite
+
+        _next_column:
+            inc eax
+            inc cx
+            add si, 16
+            cmp cx, MAP_WIDTH
+            je  _next_row
+            jmp _draw_map
+
+        _next_row:
+            mov si, 8
+            add di, 16
+            mov cx, 0
+            inc dx
+            cmp dx, MAP_HEIGHT
+            jne _draw_map
+
+    pop dx
+    pop cx
+    pop eax
+    pop di
+    pop si
+
+    mov esp, ebp
+    pop ebp
+%endmacro
+
 _start:
     mov al, 13h                           ; setting 320x200 resolution 
     mov ah, 0h                            ; setting video mode
@@ -404,11 +425,9 @@ _loop:
     
     delay 30000, 0
 
-    call draw_map
+    draw_map
 
     draw_sprite [pt_pos_x], [pt_pos_y], [pt_dir], ptank
-
-    print_info 1, 0, 0 
 
     cmp  byte [pb_active], 1    ; active bullet ? 
     jne _key_event
@@ -428,26 +447,44 @@ _loop:
 
     _key_event:
 
-    print 0, 0, msg2
+      print_info 1, 0, word[key]
 
-      mov ah, 01h
-      mov ah, 00h                ; reads key event
-      int 16h
+      mov ah, 0x01  ; Call mode for Key Stroke
+      int 0x16
+      mov ah, 0x00
+      int 0x16
       
+      cmp al, 6Ch
+      mov word[key], 5
+      je  _pause 
+
+      cmp byte[on_pause], 1
+      je _key_event
+
+      cmp al, 72h
+      mov word[key], 6
+      je _start
+
       cmp ah, 48h                ; up arrow
+      mov word[key], 0
       je  _up_key
 
       cmp ah, 50h                ; down arrow
+      mov word[key], 1
       je  _down_key
 
-      cmp ah, 4Bh                ; left arrow
-      je  _left_key
-
       cmp ah, 4Dh                ; right arrow
+      mov word[key], 2
       je  _right_key
 
+      cmp ah, 4Bh                ; left arrow
+      mov word[key], 3
+      je  _left_key
+
       cmp ah, 39h                ; space
-      je _shoot_key
+      mov word[key], 4
+      je _shoot_key 
+
 
       jmp _done_key_event        ; no key event
 
@@ -472,6 +509,7 @@ _loop:
       mov ebx,[pt_pos_y]
       mov [posX],eax
       mov [posY],ebx
+      mov byte [disparo], 0
       call movePos
       jmp _done_key_event
 
@@ -497,6 +535,15 @@ _loop:
       mov [pt_dir], ecx
       
     jmp _loop                             ; next loop iteration
+
+_pause:
+      pushad
+      print 18, 7, pause_label
+      mov ax, 1
+      sub ax, word[on_pause]
+      mov word[on_pause], ax
+      popad
+      jmp _key_event
 
 ;----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ;   This macro draw a sprite
@@ -595,75 +642,6 @@ _draw_sprite:
     pop ebp
     ret 6
 
-
-
-draw_map:
-    push ebp
-    mov ebp, esp
-
-    push si
-    push di
-    push eax
-    push cx
-    push dx
-
-    mov si, 8
-    mov di, 0
-    mov eax, CURRENT_MAP
-
-    mov cx, 0
-    mov dx, 0
-
-    _draw_map:  
-        cmp  byte [eax], 1
-        je   _dwall
-        cmp  byte [eax], 2
-        je   _uwall
-        cmp  byte [eax], 3
-        je   _eagle
-        jmp  _next_column
-
-        _dwall:
-            mov ebx, dwall
-            jmp _draw_tiled
-        _uwall:
-            mov ebx, uwall
-            jmp _draw_tiled
-        _eagle:
-            mov ebx, eagle
-
-        _draw_tiled:
-            push si                        
-            push di                        
-            push word 0
-            call _draw_sprite
-
-        _next_column:
-            inc eax
-            inc cx
-            add si, 16
-            cmp cx, MAP_WIDTH
-            je  _next_row
-            jmp _draw_map
-
-        _next_row:
-            mov si, 8
-            add di, 16
-            mov cx, 0
-            inc dx
-            cmp dx, MAP_HEIGHT
-            jne _draw_map
-
-    pop dx
-    pop cx
-    pop eax
-    pop di
-    pop si
-
-    mov esp, ebp
-    pop ebp
-    ret
-
     ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%richard%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     choca:
     pushad
@@ -692,7 +670,6 @@ draw_map:
               add eax,15
               cmp ebx,eax
               jg salida
-                print 5, 5, msg2
                 mov ecx,1
                 mov [resultcollition],ecx
           
@@ -788,8 +765,6 @@ draw_map:
     pop ebx
     pop eax
     ret 
-
-
 
 compColisionMapa:
     push ebp
